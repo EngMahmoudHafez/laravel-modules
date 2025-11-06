@@ -46,6 +46,8 @@ class ModuleMakeCommand extends Command
                 ->setActive(! $this->option('disabled'))
                 ->setVendor($this->option('author-vendor'))
                 ->setAuthor($this->option('author-name'), $this->option('author-email'))
+                ->setWithRepository($this->option('with-repository'))
+                ->setWithService($this->option('with-service'))
                 ->generate();
 
             if ($code === E_ERROR) {
@@ -84,6 +86,8 @@ class ModuleMakeCommand extends Command
             ['author-name', null, InputOption::VALUE_OPTIONAL, 'Author name.'],
             ['author-email', null, InputOption::VALUE_OPTIONAL, 'Author email.'],
             ['author-vendor', null, InputOption::VALUE_OPTIONAL, 'Author vendor.'],
+            ['with-repository', null, InputOption::VALUE_NONE, 'Generate repository and repository interface with the module.'],
+            ['with-service', null, InputOption::VALUE_NONE, 'Generate service class with the module.'],
         ];
     }
 

@@ -83,6 +83,16 @@ class ModuleGenerator extends Generator
     protected ?string $vendor = null;
 
     /**
+     * Generate repository with module.
+     */
+    protected bool $withRepository = false;
+
+    /**
+     * Generate service with module.
+     */
+    protected bool $withService = false;
+
+    /**
      * The constructor.
      */
     public function __construct(
@@ -240,6 +250,26 @@ class ModuleGenerator extends Generator
     public function setVendor(?string $vendor = null): self
     {
         $this->vendor = $vendor;
+
+        return $this;
+    }
+
+    /**
+     * Set with repository flag.
+     */
+    public function setWithRepository(bool $withRepository): self
+    {
+        $this->withRepository = $withRepository;
+
+        return $this;
+    }
+
+    /**
+     * Set with service flag.
+     */
+    public function setWithService(bool $withService): self
+    {
+        $this->withService = $withService;
 
         return $this;
     }
@@ -438,6 +468,31 @@ class ModuleGenerator extends Generator
                 'controller' => $this->getName().'Controller',
                 'module' => $this->getName(),
             ] + $options);
+        }
+
+        // Generate repository and repository interface if requested
+        if ($this->withRepository) {
+            $moduleName = $this->getName();
+            
+            // Generate RepositoryInterface
+            $this->console->call('module:make-interface', [
+                'name' => $moduleName.'RepositoryInterface',
+                'module' => $moduleName,
+            ]);
+
+            // Generate Repository
+            $this->console->call('module:make-repository', [
+                'name' => $moduleName.'Repository',
+                'module' => $moduleName,
+            ]);
+        }
+
+        // Generate service if requested
+        if ($this->withService) {
+            $this->console->call('module:make-service', [
+                'name' => $this->getName().'Service',
+                'module' => $this->getName(),
+            ]);
         }
     }
 

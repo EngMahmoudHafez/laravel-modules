@@ -1,19 +1,15 @@
 <?php
 
 namespace $CLASS_NAMESPACE$;
-$REPOSITORY_INTERFACE_USE$
 
-class $CLASS$$REPOSITORY_INTERFACE_IMPLEMENTS$
+interface $CLASS$
 {
     /**
      * Get all records.
      *
      * @return mixed
      */
-    public function all()
-    {
-        // Implementation
-    }
+    public function all();
 
     /**
      * Get a record by ID.
@@ -21,10 +17,7 @@ class $CLASS$$REPOSITORY_INTERFACE_IMPLEMENTS$
      * @param  int  $id
      * @return mixed
      */
-    public function find($id)
-    {
-        // Implementation
-    }
+    public function find($id);
 
     /**
      * Create a new record.
@@ -32,10 +25,7 @@ class $CLASS$$REPOSITORY_INTERFACE_IMPLEMENTS$
      * @param  array  $data
      * @return mixed
      */
-    public function create(array $data)
-    {
-        // Implementation
-    }
+    public function create(array $data);
 
     /**
      * Update a record.
@@ -44,10 +34,7 @@ class $CLASS$$REPOSITORY_INTERFACE_IMPLEMENTS$
      * @param  array  $data
      * @return mixed
      */
-    public function update($id, array $data)
-    {
-        // Implementation
-    }
+    public function update($id, array $data);
 
     /**
      * Delete a record.
@@ -55,8 +42,8 @@ class $CLASS$$REPOSITORY_INTERFACE_IMPLEMENTS$
      * @param  int  $id
      * @return bool
      */
-    public function delete($id)
-    {
-        // Implementation
-    }
+    public function delete($id);
 }
+
+
+

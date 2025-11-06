@@ -32,10 +32,55 @@ class RepositoryMakeCommand extends GeneratorCommand
     {
         $module = $this->laravel['modules']->findOrFail($this->getModuleName());
 
-        return (new Stub($this->getStubName(), [
+        $repositoryName = $this->getClassNameWithoutNamespace();
+        $interfaceName = str_replace('Repository', 'RepositoryInterface', $repositoryName);
+        
+        // Try to determine if RepositoryInterface exists
+        $interfaceNamespace = $this->getInterfaceNamespace($module, $interfaceName);
+        $hasInterface = $this->hasRepositoryInterface($module, $interfaceName);
+
+        $replacements = [
             'CLASS_NAMESPACE' => $this->getClassNamespace($module),
-            'CLASS' => $this->getClassNameWithoutNamespace(),
-        ]))->render();
+            'CLASS' => $repositoryName,
+        ];
+
+        // Add interface-related replacements if interface exists
+        if ($hasInterface) {
+            $replacements['REPOSITORY_INTERFACE_NAMESPACE'] = $interfaceNamespace;
+            $replacements['REPOSITORY_INTERFACE'] = $interfaceName;
+            $replacements['REPOSITORY_INTERFACE_USE'] = "\nuse {$interfaceNamespace};";
+            $replacements['REPOSITORY_INTERFACE_IMPLEMENTS'] = " implements {$interfaceName}";
+        } else {
+            // If no interface, remove the implements clause from stub
+            $replacements['REPOSITORY_INTERFACE_NAMESPACE'] = '';
+            $replacements['REPOSITORY_INTERFACE'] = '';
+            $replacements['REPOSITORY_INTERFACE_USE'] = '';
+            $replacements['REPOSITORY_INTERFACE_IMPLEMENTS'] = '';
+        }
+
+        return (new Stub($this->getStubName(), $replacements))->render();
+    }
+
+    /**
+     * Get interface namespace.
+     */
+    protected function getInterfaceNamespace($module, string $interfaceName): string
+    {
+        $interfacesPath = GenerateConfigReader::read('interfaces')->getPath() ?? config('modules.paths.app_folder').'Interfaces';
+        $namespace = config('modules.paths.generator.interfaces.namespace', 'Interfaces');
+        
+        return $this->module_namespace($module->getStudlyName(), $namespace).'\\'.$interfaceName;
+    }
+
+    /**
+     * Check if repository interface exists.
+     */
+    protected function hasRepositoryInterface($module, string $interfaceName): bool
+    {
+        $interfacesPath = GenerateConfigReader::read('interfaces')->getPath() ?? config('modules.paths.app_folder').'Interfaces';
+        $interfacePath = $this->laravel['modules']->getModulePath($this->getModuleName()).$interfacesPath.'/'.$interfaceName.'.php';
+        
+        return $this->laravel['files']->exists($interfacePath);
     }
 
     protected function getArguments(): array
