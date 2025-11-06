@@ -70,6 +70,13 @@ class InterfaceMakeCommand extends GeneratorCommand
 
     protected function getStubName(): string
     {
+        $interfaceName = $this->getInterfaceName();
+        
+        // Use repository-interface stub if the name contains RepositoryInterface
+        if (str_contains($interfaceName, 'RepositoryInterface')) {
+            return '/repository-interface.stub';
+        }
+        
         return '/interface.stub';
     }
 }
